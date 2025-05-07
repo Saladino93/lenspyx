@@ -234,6 +234,11 @@ def get_mf_response(qe_key:str, nlev_t:float, beam:float, lmax_ivf:int, lmax_sky
         inoise_cls[spec][:lmax_ivf + 1] = (utils_hp.gauss_beam(beam / 60 / 180 * np.pi, lmax=lmax_ivf) /  nlev_rad[spec]) ** 2
         inoise_cls[spec][:lmax_ivf + 1] *= (cls_unl['ee'][:lmax_ivf + 1] > 0)
         inoise_cls[spec][:lmin_ivf] *= 0.
+
+    for k in inoise_cls.keys():
+        inoise_cls[k][lmax_ivf+1:] *= 0
+        inoise_cls[k][:lmin_ivf] *= 0.
+        
     cls_noise = {spec: cli(inoise_cls[spec]) for spec in inoise_cls.keys()}
     # Adding non-zero big value
     for spec in list(inoise_cls.keys()):
