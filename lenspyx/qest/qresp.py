@@ -228,6 +228,8 @@ def get_mf_response(qe_key:str, nlev_t:float, beam:float, lmax_ivf:int, lmax_sky
         inoise_cls['tt'][:lmax_ivf + 1] *= (cls_unl['tt'][:lmax_ivf + 1] > 0)
         inoise_cls['tt'][:lmin_ivf] *= 0.
     for spec in ['ee', 'bb']:
+        if spec in inoise_cls.keys():
+            continue
         if nlev_p is None: nlev_p = np.sqrt(2) * nlev_t
         inoise_cls[spec] = np.zeros(lmax_sky + 1, dtype=float)
         nlev_rad = {spec: (nlev_p / 60 / 180 * np.pi)}
@@ -238,7 +240,7 @@ def get_mf_response(qe_key:str, nlev_t:float, beam:float, lmax_ivf:int, lmax_sky
     for k in inoise_cls.keys():
         inoise_cls[k][lmax_ivf+1:] *= 0
         inoise_cls[k][:lmin_ivf] *= 0.
-        
+
     cls_noise = {spec: cli(inoise_cls[spec]) for spec in inoise_cls.keys()}
     # Adding non-zero big value
     for spec in list(inoise_cls.keys()):
